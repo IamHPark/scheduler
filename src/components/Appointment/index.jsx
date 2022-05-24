@@ -6,6 +6,7 @@ import Empty from "./Empty";
 import Form from "./Form";
 import Status from "./Status";
 import Confirm from "./Confirm";
+import Error from "./Error";
 import useVisualMode from "hooks/useVisualMode";
 
 // when props.interview exist -> Show component
@@ -17,6 +18,9 @@ export default function Appointment(props) {
   const SAVING = "SAVING";
   const DELETING = "DELETING";
   const CONFIRM = "CONFIRM";
+  const EDIT = "EDIT";
+  const ERROR_SAVE = "ERROR_SAVE"
+  const ERROR_DELETE = "ERROR_DELETE"
   const { mode, transition, back } = useVisualMode( props.interview ? SHOW : EMPTY);
 
   // pass to Form, Form should  capture the name and interviewer and pass them to props.onSave as arguments
@@ -26,21 +30,23 @@ export default function Appointment(props) {
       student: name,
       interviewer
     };
+    console.log('interview:', interview);
     transition(SAVING)
     // call props.bookInterview
     props.bookInterview(props.id, interview)
-    .then(() => {transition(SHOW)})
+    .then(() => transition(SHOW))
+    .catch((error) => transition(ERROR_SAVE, true)
+    );
   };
 
   const confirm = () => {
     transition(CONFIRM);
   }
   const deleteInterview = (id) => {
-    transition(DELETING);
+    transition(DELETING, true);
     props.cancelInterview(props.id)
-    .then(() => {
-      transition(EMPTY);
-    })
+    .then(() => transition(EMPTY))
+    .catch((error) => transition(ERROR_DELETE, true))
   }
 
   return (
@@ -52,12 +58,16 @@ export default function Appointment(props) {
           student={props.interview.student}
           interviewer={props.interview.interviewer}
           onDelete={confirm}
+          onEdit={() => {transition(EDIT)}}
         />
       )}
       {mode === CREATE && <Form interviewers={props.interviewers} onSave={save} onCancel={()=>{back()}}/>}
+      {mode === EDIT && <Form student={props.interview.student} interviewer={props.interview.interviewer} interviewers={props.interviewers} onSave={save} onCancel={back}/>}
       {mode === SAVING && <Status message={'Saving'}/>}
-      {mode === CONFIRM && <Confirm confirm={deleteInterview}/>}
+      {mode === CONFIRM && <Confirm confirm={deleteInterview} onCancel={back}/>}
       {mode === DELETING && <Status message={'Deleting'}/>}
+      {mode === ERROR_SAVE && <Error onClose={back}/>}
+      {mode === ERROR_DELETE && <Error onClose={back}/>}
 
     </article>
   )

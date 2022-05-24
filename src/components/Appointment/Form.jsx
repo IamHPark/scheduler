@@ -6,6 +6,8 @@ import Button from "components/Button";
 const Form = (props) => {
   const [student, setStudent] = useState(props.student || "");
   const [interviewer, setInterviewer] = useState(props.interviewer || null);
+  console.log('student: ', student)
+  console.log('interviewer:', interviewer)
   const eventHandler = (event) => {
     setStudent(event.target.value)
   }
