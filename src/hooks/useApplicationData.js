@@ -1,5 +1,10 @@
 import React, {useState, useEffect} from "react";
 import axios from 'axios';
+import updateSpots from "helpers/updateSpots";
+
+
+// do not reload all the data in order to spots for a day
+// cannot mutate state when updating the spots
 
 export default function useApplicationData() {
   const [state, setState] = useState({
@@ -24,10 +29,8 @@ export default function useApplicationData() {
     //update the database with interview data
     return axios.put(`/api/appointments/${appointment.id}`, appointment)
       .then(() => {
-        setState({
-          ...state,
-          appointments
-        });
+        const days = updateSpots(state, appointments, id);
+        setState({...state, appointments, days});
       });
   };
 
@@ -44,10 +47,8 @@ export default function useApplicationData() {
 
     return axios.delete(`/api/appointments/${id}`)
     .then(() => {
-      setState({
-        ...state,
-        appointments
-      });
+      const days = updateSpots(state, appointments, id);
+      setState({...state, appointments, days});
     })
   };
 

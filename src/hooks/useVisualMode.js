@@ -7,11 +7,9 @@ export default function useVisualMode(initial) {
   const transition = (newMode, replace = false) => {
     setMode(newMode)
     setHistory( prev => replace ? [...prev.slice(0, prev.length-1), newMode] : [...prev, newMode]);
-    console.log("within transition: ", history)
   };
 
   const back = () => {
-      console.log(history)
       const historyCopy = [...history]
       if(historyCopy.length > 1) { historyCopy.pop() }
       setHistory(historyCopy)
