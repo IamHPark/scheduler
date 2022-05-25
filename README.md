@@ -26,8 +26,8 @@ npm run storybook
 
 ## Final Product
 
-![scheduler overview](#)
-![scheduler creating or editing](#)
+![scheduler overview](https://github.com/IamHPark/scheduler/blob/master/docs/scheduler-overview.png)
+![scheduler creating or editing](https://github.com/IamHPark/scheduler/blob/master/docs/scheduler-create_edit.png)
 
 ## Dependencies
 
